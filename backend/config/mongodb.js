@@ -4,7 +4,7 @@ const connectDB = async () => {
     mongoose.connection.on('connected', () => {
         console.log("Connected to MongoDB");
     });
-    await mongoose.connect(`${process.env.MONGODB_URL}/project1`)
+    await mongoose.connect(`${process.env.MONGODB_URL}/priscripto`)
 }
 
 export default connectDB

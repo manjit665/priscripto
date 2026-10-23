@@ -88,7 +88,7 @@ const loginUser = async (req, res) => {
 const getProfile = async (req, res) => {
 
     try {
-        const { userId } = req.body
+        const  userId  = req.user.id
         const userData = await userModel.findById(userId).select('-password')
 
         res.json({ success: true, userData })
@@ -103,8 +103,8 @@ const getProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
 
     try {
-
-        const { userId, name, phone, address, dob, gender } = req.body
+        const  userId  = req.user.id
+        const { name, phone, address, dob, gender } = req.body
         const imageFile = req.file
 
         if (!name || !phone || !dob || !gender) {
@@ -134,12 +134,22 @@ const updateProfile = async (req, res) => {
 const bookAppointment = async (req, res) => {
 
     try {
-
-        const { userId, docId, slotDate, slotTime } = req.body
+        const  userId  = req.user.id
+        const { docId, slotDate, slotTime } = req.body
         const docData = await doctorModel.findById(docId).select("-password")
 
+        if (!docData) {
+            return res.status(404).json({
+                success: false,
+                message: "Doctor not found"
+            });
+        }
+
         if (!docData.available) {
-            return res.json({ success: false, message: 'Doctor Not Available' })
+            return res.json({
+                success: false,
+                message: "Doctor Not Available"
+            });
         }
 
         let slots_booked = docData.slots_booked
@@ -190,13 +200,23 @@ const bookAppointment = async (req, res) => {
 // API to cancel appointment
 const cancelAppointment = async (req, res) => {
     try {
-
-        const { userId, appointmentId } = req.body
+        const  userId  = req.user.id
+        const {appointmentId } = req.body
         const appointmentData = await appointmentModel.findById(appointmentId)
 
         // verify appointment user 
-        if (appointmentData.userId !== userId) {
-            return res.json({ success: false, message: 'Unauthorized action' })
+        if (!appointmentData) {
+            return res.status(404).json({
+                success: false,
+                message: "Appointment not found"
+            });
+        }
+
+        if (appointmentData.userId.toString() !== userId.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: "Unauthorized action"
+            });
         }
 
         await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
@@ -224,7 +244,7 @@ const cancelAppointment = async (req, res) => {
 const listAppointment = async (req, res) => {
     try {
 
-        const { userId } = req.body
+        const  userId  = req.user.id
         const appointments = await appointmentModel.find({ userId })
 
         res.json({ success: true, appointments })
