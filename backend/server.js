@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary.js'
 import adminRouter from './routes/adminRoute.js'
 import { doctorList } from './controllers/doctorController.js'
 import  userRouter  from './routes/userRoute.js'
+import doctorRouter from './routes/DoctorRoute.js'
 
 //app config
 const app=express()
@@ -19,7 +20,7 @@ app.use(cors())
 
 //api endpoints
 app.use('/api/admin',adminRouter)
-app.use('/api/doctor',doctorList)
+app.use('/api/doctor',doctorRouter)
 app.use('/api/user',userRouter)
 //localhost:4000/api/admin/add-doctor
 

@@ -35,7 +35,7 @@ const loginDoctor = async (req, res) => {
 const appointmentsDoctor = async (req, res) => {
     try {
 
-        const { docId } = req.body
+        const docId=req.doc.id
         const appointments = await appointmentModel.find({ docId })
 
         res.json({ success: true, appointments })
@@ -49,8 +49,8 @@ const appointmentsDoctor = async (req, res) => {
 // API to cancel appointment for doctor panel
 const appointmentCancel = async (req, res) => {
     try {
-
-        const { docId, appointmentId } = req.body
+        const docId=req.doc.id
+        const { appointmentId } = req.body
 
         const appointmentData = await appointmentModel.findById(appointmentId)
         if (appointmentData && appointmentData.docId === docId) {
@@ -70,8 +70,9 @@ const appointmentCancel = async (req, res) => {
 // API to mark appointment completed for doctor panel
 const appointmentComplete = async (req, res) => {
     try {
+        const docId=req.doc.id
 
-        const { docId, appointmentId } = req.body
+        const {  appointmentId } = req.body
 
         const appointmentData = await appointmentModel.findById(appointmentId)
         if (appointmentData && appointmentData.docId === docId) {
@@ -106,7 +107,7 @@ const doctorList = async (req, res) => {
 const changeAvailablity = async (req, res) => {
     try {
 
-        const { docId } = req.body
+       const docId=req.doc.id
 
         const docData = await doctorModel.findById(docId)
         await doctorModel.findByIdAndUpdate(docId, { available: !docData.available })
@@ -122,7 +123,7 @@ const changeAvailablity = async (req, res) => {
 const doctorProfile = async (req, res) => {
     try {
 
-        const { docId } = req.body
+        const docId=req.doc.id
         const profileData = await doctorModel.findById(docId).select('-password')
 
         res.json({ success: true, profileData })
@@ -136,8 +137,8 @@ const doctorProfile = async (req, res) => {
 // API to update doctor profile data from  Doctor Panel
 const updateDoctorProfile = async (req, res) => {
     try {
-
-        const { docId, fees, address, available } = req.body
+        const docId=req.doc.id
+        const { fees, address, available } = req.body
 
         await doctorModel.findByIdAndUpdate(docId, { fees, address, available })
 
@@ -153,7 +154,7 @@ const updateDoctorProfile = async (req, res) => {
 const doctorDashboard = async (req, res) => {
     try {
 
-        const { docId } = req.body
+        const docId=req.doc.id
 
         const appointments = await appointmentModel.find({ docId })
 
